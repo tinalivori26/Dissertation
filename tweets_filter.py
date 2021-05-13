@@ -5,6 +5,9 @@ from nltk.stem import WordNetLemmatizer
 from emoji import UNICODE_EMOJI
 from nltk import FreqDist
 import json
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
 from nltk.tokenize.casual import TweetTokenizer
 EN_EMOJI = UNICODE_EMOJI['en']
 
@@ -54,6 +57,13 @@ def write_files(directory, tweets):
     with open(directory, mode="w", encoding="utf-8") as f:
         f.write(json_object)
 
+#plotting the frequency distribution of the words and emojis
+def freq_dist_plot(freq_dist):
+    freq_dist = pd.Series(dict(freq_dist))
+    figure, axis = plt.subplots(figsize=(10, 10))
+    sns.barplot(x=freq_dist.index, y=freq_dist.values, ax=axis)
+    plt.show()
+
 
 read_directory = r"C:/Users/marti/OneDrive/Documents/HLT/Dissertation/code/data/tweets/tweets.json"
 
@@ -63,18 +73,15 @@ with open(read_directory, mode="r", encoding="utf8") as json_file:
 
 #making a list of tweets and their language, storing them as tuples
 tweets_list = [(item[0], item[3]) for item in data]
-print(len(tweets_list))
 
 #retrieving those tweets which are in english only
 english_tweets = [pair[0] for pair in tweets_list if pair[1] == "en"]
 
 #tokenizing the retrieved tweets - the raw_all_tweets dataset
 tokenized_en_tweets = [TweetTokenizer().tokenize(tweet) for tweet in english_tweets if len(english_tweets) != 0]
-print(len(tokenized_en_tweets))
 
 #saving tweets with an emoji - the only_emoji_tweets dataset
 emoji_tweet_list = [emoji_tweet(tweet) for tweet in tokenized_en_tweets if emoji_tweet(tweet) is not None]
-print(len(emoji_tweet_list))
 
 #preprocessing the tweets using the preprocessing function - the cleaned_all_tweets dataset
 cleaned_all_tweets = [preprocessing(tweet) for tweet in tokenized_en_tweets]
@@ -82,28 +89,52 @@ cleaned_all_tweets = [preprocessing(tweet) for tweet in tokenized_en_tweets]
 #preprocessing the tweets using the preprocessing function - the cleaned_emoji_tweets dataset
 cleaned_emoji_tweets = [preprocessing(tweet) for tweet in emoji_tweet_list]
     
-#find the word frequency distribution for the various datasets
+#finding the word frequency distribution for the various datasets
 raw_all_fd = freq(tokenized_en_tweets)
 only_emoji_fd = freq(emoji_tweet_list)
 cleaned_all_fd = freq(cleaned_all_tweets)
 cleaned_emoji_fd = freq(cleaned_emoji_tweets)
 
-print(raw_all_fd.most_common(10))
-print(only_emoji_fd.most_common(10))
-print(cleaned_all_fd.most_common(10))
-print(cleaned_emoji_fd.most_common(10))
+#finding the 10 most common words
+raw_all_fd_tp10 = raw_all_fd.most_common(10)
+only_emoji_fd_tp10 = only_emoji_fd.most_common(10)
+cleaned_all_fd_tp10 = cleaned_all_fd.most_common(10)
+cleaned_emoji_fd_tp10 = cleaned_emoji_fd.most_common(10)
+
+print(raw_all_fd_tp10)
+print(only_emoji_fd_tp10)
+print(cleaned_all_fd_tp10)
+print(cleaned_emoji_fd_tp10)
 print()
 
-#find the emoji frequency distribution for the various datasets
+#plotting the 10 most common words
+freq_dist_plot(raw_all_fd_tp10)
+freq_dist_plot(only_emoji_fd_tp10)
+freq_dist_plot(cleaned_all_fd_tp10)
+freq_dist_plot(cleaned_emoji_fd_tp10)
+
+#finding the emoji frequency distribution for the various datasets
 raw_all_e_fd = e_freq(tokenized_en_tweets)
 only_emoji_e_fd = e_freq(emoji_tweet_list)
 cleaned_all_e_fd = e_freq(cleaned_all_tweets)
 cleaned_emoji_e_fd = e_freq(cleaned_emoji_tweets)
 
-print(raw_all_e_fd.most_common(10))
-print(only_emoji_e_fd.most_common(10))
-print(cleaned_all_e_fd.most_common(10))
-print(cleaned_emoji_e_fd.most_common(10))
+#finding the 10 most common emojis
+raw_all_e_fd_tp10 = raw_all_e_fd.most_common(10)
+only_emoji_e_fd_tp10 = only_emoji_e_fd.most_common(10)
+cleaned_all_e_fd_tp10 = cleaned_all_e_fd.most_common(10)
+cleaned_emoji_e_fd_tp10 = cleaned_emoji_e_fd.most_common(10)
+
+print(raw_all_e_fd_tp10)
+print(only_emoji_e_fd_tp10)
+print(cleaned_all_e_fd_tp10)
+print(cleaned_emoji_e_fd_tp10)
+
+#plotting the 10 most common emoji
+freq_dist_plot(raw_all_e_fd_tp10)
+freq_dist_plot(only_emoji_e_fd_tp10)
+freq_dist_plot(cleaned_all_e_fd_tp10)
+freq_dist_plot(cleaned_emoji_e_fd_tp10)
 
 #directories to save the 4 different datasets into
 write_dir_1 = "C:/Users/marti/OneDrive/Documents/HLT/Dissertation/code/data/tweets/raw_all.json"
@@ -111,7 +142,7 @@ write_dir_2 = "C:/Users/marti/OneDrive/Documents/HLT/Dissertation/code/data/twee
 write_dir_3 = "C:/Users/marti/OneDrive/Documents/HLT/Dissertation/code/data/tweets/clean_all.json"
 write_dir_4 = "C:/Users/marti/OneDrive/Documents/HLT/Dissertation/code/data/tweets/clean_emojis.json"
 
-#write the data into the .json file
+#writing the data into the .json file
 write_files(write_dir_1, tokenized_en_tweets)
 write_files(write_dir_2, emoji_tweet_list)
 write_files(write_dir_3, cleaned_all_tweets)
