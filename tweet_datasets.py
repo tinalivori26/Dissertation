@@ -5,7 +5,7 @@ from nltk.stem import WordNetLemmatizer
 from emoji import UNICODE_EMOJI
 import json
 from nltk.tokenize.casual import TweetTokenizer
-EN_EMOJI = UNICODE_EMOJI['en']
+EN_EMOJI = UNICODE_EMOJI["en"]
 
 
 #removing stopwords, urls, punctuation, and implementing lower casing, lemmatization
@@ -14,9 +14,11 @@ def preprocessing(tweet):
     stop_words = set(stopwords.words("english"))
     no_stop_list = [token for token in tweet if token not in stop_words]
     #url removal
-    no_url_list = [re.sub(r"http\S+|www\S+|https\S+", '', tweet, flags=re.MULTILINE) for tweet in no_stop_list]
+    no_url_list = [re.sub(r"http\S+|www\S+|https\S+", "", tweet, flags=re.MULTILINE) for tweet in no_stop_list]
+    #@ and # references removal
+    no_refs_list = [re.sub(r"\@\w+|\#", "", tweet) for tweet in no_url_list]
     #punctuation removal
-    no_punctuation_list = [token.translate(str.maketrans('', '', string.punctuation)) for token in no_url_list]
+    no_punctuation_list = [token.translate(str.maketrans("", "", string.punctuation)) for token in no_refs_list]
     #lowercasing
     case_fold_list = [token.casefold() for token in no_punctuation_list]
     #lemmatization
