@@ -16,7 +16,7 @@ def preprocessing(tweet):
     #url removal
     no_url_list = [re.sub(r"http\S+|www\S+|https\S+", "", tweet, flags=re.MULTILINE) for tweet in no_stop_list]
     #@ and # references removal
-    no_refs_list = [re.sub(r"\@\w+|\#", "", tweet) for tweet in no_url_list]
+    no_refs_list = [re.sub(r"\@\w+|\#\w+", "", tweet) for tweet in no_url_list]
     #punctuation removal
     no_punctuation_list = [token.translate(str.maketrans("", "", string.punctuation)) for token in no_refs_list]
     #lowercasing
