@@ -1,6 +1,13 @@
+import json
 from gensim.models import Word2Vec
 from sklearn.manifold import TSNE
 import matplotlib.pyplot as plt
+
+
+#function to read in the .json file datasets
+def read_files(directory):
+    with open(directory, mode="r", encoding="utf8") as json_file:
+        return json.load(json_file)
 
 
 #creating a TSNE model and plotting it
@@ -25,12 +32,21 @@ def tsne_plot(model, toks):
     plt.show()
 
 
-#loading the Word2Vec model
-model1 = Word2Vec.load("raw_emoji_model")
+#reading directories of emojis
+read_dir_1 = r"C:/Users/marti/OneDrive/Documents/HLT/Dissertation/code/data/word2vec_models/top20emojis.json"
+read_dir_2 = r"C:/Users/marti/OneDrive/Documents/HLT/Dissertation/code/data/word2vec_models/top100emojis.json"
 
-#list of top 20 words and emojis
-top_tokens = ["😂", "❤", "💙", "🙈", "🎶", "🍕", "🙉", "🙊", "🐶", "😍", "☀", "😊", "😭", "🤣", "🏻", "👊", "🙏", "🏼",
-              "😆", "😘"]
+#retrieving the top 20 emojis
+top_20_fd = read_files(read_dir_1)
+top_20_emojis = [pair[0] for pair in top_20_fd]
+
+#retrieving the top 100 emojis
+top_100_fd = read_files(read_dir_2)
+top_100_emojis = [pair[0] for pair in top_100_fd]
+
+#loading the Word2Vec model
+model1 = Word2Vec.load("clean_emoji_model")
 
 #plotting the top data retrieved from the model
-tsne_plot(model1, top_tokens)
+tsne_plot(model1, top_20_emojis)
+tsne_plot(model1, top_100_emojis)
