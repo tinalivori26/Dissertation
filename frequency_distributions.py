@@ -108,6 +108,7 @@ e_fd = e_freq(raw_all_data)
 #finding the 10 most common emojis
 print("10 MOST FREQUENT EMOJIS")
 print("Emojis", e_fd.most_common(10))
+print()
 
 #finding those emojis with a count of 1
 hapax_e = e_fd.hapaxes()
