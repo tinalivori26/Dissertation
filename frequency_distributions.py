@@ -114,10 +114,6 @@ print()
 hapax_e = e_fd.hapaxes()
 print("Count of emojis with freq = 1:", len(hapax_e))
 
-#finding those emojis with a count of 1
-hapax_e = e_fd.hapaxes()
-print("Count of emojis with freq = 1:", len(hapax_e))
-
 #plotting the frequency for the 100 most frequent emoji tokens (145,000/194,738) - 74% of emojis
 e_fd.plot(100)
 
